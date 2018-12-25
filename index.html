@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<body>
+<!-- <img id="demon" src="demon_small.png" />
+    <p>Plansza:</p> -->
+<div>
+    <p id='info'></p>
+    <input id="speedInput" type="number" name="speed" value="30"/>
+
+</div>
+<canvas id="game-board" width="400" height="400">
+
+</canvas>
+</body>
+<script>
+    window.onload = function(){
+        var canvas = document.getElementById("game-board");
+        var context = canvas.getContext("2d");
+        
+        var demonImg = new Image();
+        var currentX = 100;
+        var currentY = 50;
+        var speedInput = document.getElementById("speedInput");
+        var speed = Number(speedInput.value);
+        var demonDirection = "S";
+        
+        speedInput.onchange = function(event){
+            speed = Number(event.target.value);
+        }
+
+        demonImg.src = "demon_small.png";
+
+        demonImg.onload = function() {
+            updateGame();
+            updateInfo();
+        }
+
+        var fireballImg = new Image();
+        fireballImg.src = "fireball_small.png";
+        var fireballSpeed = 55;
+        var fireballDirection = "S";
+        var fireballPositionX = 0;
+        var fireballPositionY = 0;
+        function updateGame(){
+            //clear board
+            context.fillStyle = "#FFF";
+            context.fillRect(0, 0, canvas.width, canvas.height);
+        
+            //draw demon
+            context.drawImage(demonImg,currentX,currentY);
+            
+            switch(fireballDirection){
+                case "N": 
+                fireballPositionY -= fireballSpeed;
+                break;
+                case "S":
+                fireballPositionY += fireballSpeed;
+                break;
+                case "E":
+                fireballPositionX += fireballSpeed;
+                break;
+                case "W":
+                fireballPositionX -= fireballSpeed;
+
+            }
+            //fireballPositionY = 15;
+
+
+            drawFireball();
+        }
+
+        function drawFireball(){
+                context.drawImage(fireballImg, fireballPositionX, fireballPositionY);
+        }
+
+        function updateInfo(){
+            var info = document.getElementById("info");
+            info.innerHTML = "Direction: " + demonDirection + ", speed:";
+        }
+        window.addEventListener('keydown', function(event) {
+            switch (event.keyCode) {
+                case 37: // Left
+                currentX = currentX - speed;
+                updateGame();
+                demonDirection = "W";
+                updateInfo();
+                break;
+            
+                case 38: // Up
+                currentY = currentY - speed;
+                updateGame();
+                demonDirection = "N";
+                updateInfo();
+
+                break;
+            
+                case 39: // Right
+                currentX = currentX + speed;
+                updateGame();
+                demonDirection = "E";
+                updateInfo();
+                break;
+            
+                case 40: // Down
+                currentY += speed;
+                updateGame();
+                demonDirection = "S";
+                updateInfo();
+                break;
+
+                case 83: //S - decrease speed
+                speed = speed - 10;
+                speedInput.value = speed;
+                break;
+                case 87: //W - increase speed
+                speed = speed + 10;
+                speedInput.value = speed;
+                break;
+                
+                case 32: //space - shoot fireball
+                //shoot
+                fireballPositionX = currentX + 10;
+                fireballPositionY = currentY + 10;
+                drawFireball();
+                fireballDirection = demonDirection;
+                break;
+  }
+        }, false);
+    }
+</script>
+
+</html>
